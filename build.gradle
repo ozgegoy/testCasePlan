@@ -1,0 +1,37 @@
+plugins {
+    id 'java'
+}
+
+version = '0.0.1-SNAPSHOT'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation group: 'io.cucumber', name: 'cucumber-java', version: '7.13.0'
+    testImplementation group: 'io.cucumber', name: 'cucumber-testng', version: '7.13.0'
+    testImplementation group: 'org.testng', name: 'testng', version: '7.8.0'
+    testImplementation group: 'org.seleniumhq.selenium', name: 'selenium-chrome-driver', version: '4.21.0'
+    testImplementation group: 'org.seleniumhq.selenium', name: 'selenium-java', version: '4.21.0'
+    testImplementation group: 'io.github.bonigarcia', name: 'webdrivermanager', version: '5.9.2'
+    testImplementation group: 'org.slf4j', name: 'slf4j-api', version: '2.0.16'
+    testImplementation group: 'ch.qos.logback', name: 'logback-classic', version: '1.5.6'
+    testImplementation group: 'ch.qos.logback', name: 'logback-core', version: '1.5.6'
+
+}
+
+test {
+    useTestNG {
+        suites 'testng.xml'
+    }
+    maxParallelForks = 1
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
