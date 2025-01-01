@@ -115,7 +115,7 @@ public class Hooks {
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOf(element));
         JavascriptExecutor js = (JavascriptExecutor) driver;
-        js.executeScript("arguments[0].scrollIntoView(false);", element);
+        js.executeScript("arguments[0].scrollIntoView(true);", element);
         try {
             Thread.sleep(500);
         } catch (InterruptedException e) {

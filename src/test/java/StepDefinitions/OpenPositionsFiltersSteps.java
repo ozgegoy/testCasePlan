@@ -3,6 +3,7 @@ package StepDefinitions;
 import Base.Hooks;
 import Pages.AutomationPage;
 import Pages.OpenPositionsFiltersPage;
+import io.cucumber.java.bs.A;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
@@ -16,6 +17,7 @@ import java.util.List;
 
 public class OpenPositionsFiltersSteps {
     WebDriverWait wait = new WebDriverWait(Hooks.getDriver(), Duration.ofSeconds(10));
+    String filterOpenPositions = "(//*[@id='filterOpenPositions']/child::*/child::*)[1]";
 
     @When("user clicks open positions")
     public void userClicksOpenPositions() {
@@ -24,6 +26,7 @@ public class OpenPositionsFiltersSteps {
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(OpenPositionsFiltersPage.getClassLocator("openPositions")))).click();
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(AutomationPage.getTextLocator("FILTERS")))).isDisplayed());
 
+        Hooks.scrollToElement(By.xpath(AutomationPage.getTextLocator("UNLIMITED TALENT")));
         List<WebElement> checkboxLabels = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(OpenPositionsFiltersPage.getClassLocator("checkbox") + "//li//label")));
 
         if (!checkboxLabels.isEmpty()) {
@@ -41,12 +44,12 @@ public class OpenPositionsFiltersSteps {
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(AutomationPage.getId("searchInput")))).clear();
             wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(AutomationPage.getId("searchInput")))).sendKeys(labelText);
 
-            Hooks.scrollToElement(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"))).click();
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//*[@id='filterOpenPositions']/child::*/child::*)[1]"))).getText().contains(labelText);
+            String checkBox = "//label[contains(text(), '" + labelText + "')]/preceding-sibling::input";
 
-            Hooks.scrollToElement(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"));
-            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"))).click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(checkBox))).click();
+            System.out.println("textControl: " + wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(filterOpenPositions))).getText().contains(labelText));
+            //Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(filterOpenPositions))).getText().contains(labelText));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(checkBox))).click();
         }
     }
 }
