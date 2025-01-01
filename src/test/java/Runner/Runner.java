@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeSuite;
 @CucumberOptions(
         features = "src/test/java/Features",
         glue = {"StepDefinitions"},
-        tags = "@testNavigationBars",
+        tags = "@test",
         plugin = {"pretty", "html:target/cucumber-reports.html", "json:target/cucumber-reports.json"}
         //dryRun = true
 

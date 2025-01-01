@@ -10,6 +10,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import java.net.URL;
@@ -21,7 +22,7 @@ public class Hooks {
     private static String baseUrl = ConfigReader.getProperty("baseUrl");
     private static final int THREAD_COUNT = Integer.parseInt(ConfigReader.getProperty("thread"));
     private static AtomicInteger threadIndexCounter = new AtomicInteger(0);
-    private static List<WebDriver> drivers = new ArrayList<>(THREAD_COUNT);
+    private static List<WebDriver> drivers = new CopyOnWriteArrayList<>();
     private static boolean headless = Boolean.parseBoolean(ConfigReader.getProperty("headless"));
     private static Boolean isRemote = Boolean.parseBoolean(ConfigReader.getProperty("remote"));
     private static Boolean gitlab = Boolean.parseBoolean(ConfigReader.getProperty("gitlab"));
@@ -29,7 +30,7 @@ public class Hooks {
 
     static {
         for (int i = 0; i < THREAD_COUNT; i++) {
-            drivers.add(createDriver());
+            drivers.add(null);
         }
     }
 
@@ -71,22 +72,23 @@ public class Hooks {
     }
 
     public static void runnerAfterSteps() {
-        WebDriver driver = getDriver(0);
+        int runnerIndex = getCurrentDriverIndex();
+        WebDriver driver = getDriver(runnerIndex);
         if (driver != null) {
             driver.quit();
-            drivers.remove(drivers.get(0));
-            System.out.println("Driver quit for thread: Runner 1 " + System.identityHashCode(Thread.currentThread()));
+            drivers.set(runnerIndex, null);
+            System.out.println("Driver quit for thread: " + runnerIndex);
         }
     }
 
     public static void runnerBeforeSteps(String browser) {
         int runnerIndex = getCurrentDriverIndex();
-        WebDriver driver = getDriver(getCurrentDriverIndex());
+        WebDriver driver = getDriver(runnerIndex);
         if (driver == null) {
-            createDriver();
+            drivers.set(runnerIndex, createDriver());
         }
         getDriver(runnerIndex).get(baseUrl);
-        System.out.println("Driver initialized for thread: Runner 1 " + System.identityHashCode(Thread.currentThread()));
+        System.out.println("Driver initialized for thread: " + runnerIndex);
     }
 
     public synchronized static WebDriver getDriver() {
@@ -102,5 +104,3 @@ public class Hooks {
         return threadIndexCounter.getAndIncrement() % THREAD_COUNT;
     }
 }
-
-
