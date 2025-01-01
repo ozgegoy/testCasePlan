@@ -1,6 +1,6 @@
 @test
-Feature: Baykar Main Page
+Feature: Baykartech Main Page
 
   @test
   Scenario: User sees the main page
-    Given the main page is displayed correctly
+    Given main page is displayed correctly

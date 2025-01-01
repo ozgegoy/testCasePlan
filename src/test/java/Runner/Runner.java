@@ -10,7 +10,7 @@ import org.testng.annotations.BeforeSuite;
 @CucumberOptions(
         features = "src/test/java/Features",
         glue = {"StepDefinitions"},
-        tags = "@test",
+        tags = "@testNavigationBars",
         plugin = {"pretty", "html:target/cucumber-reports.html", "json:target/cucumber-reports.json"}
         //dryRun = true
 
@@ -19,7 +19,7 @@ public class Runner extends AbstractTestNGCucumberTests {
 
     @BeforeSuite
     public void setUp() {
-        String browser = ConfigReader.getProperty("runner1");
+        String browser = ConfigReader.getProperty("runner");
         Hooks.runnerBeforeSteps(browser);
     }
 
