@@ -11,6 +11,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.List;
 
 public class OpenPositionsFiltersSteps {
@@ -24,12 +25,28 @@ public class OpenPositionsFiltersSteps {
         Assert.assertTrue(wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(AutomationPage.getTextLocator("FILTERS")))).isDisplayed());
 
         List<WebElement> checkboxLabels = wait.until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.xpath(OpenPositionsFiltersPage.getClassLocator("checkbox") + "//li//label")));
+
         if (!checkboxLabels.isEmpty()) {
             checkboxLabels.remove(checkboxLabels.size() - 1);
         }
+
+        List<String> labelTexts = new ArrayList<>();
         for (WebElement label : checkboxLabels) {
-            System.out.println("Checkbox Label Text: " + label.getText());
+            String labelText = label.getText();
+            System.out.println("Checkbox Label Text: " + labelText);
+            labelTexts.add(labelText);
         }
 
+        for (String labelText : labelTexts) {
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(AutomationPage.getId("searchInput")))).clear();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath(AutomationPage.getId("searchInput")))).sendKeys(labelText);
+
+            Hooks.scrollToElement(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"))).click();
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("(//*[@id='filterOpenPositions']/child::*/child::*)[1]"))).getText().contains(labelText);
+
+            Hooks.scrollToElement(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"));
+            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//label[contains(text(), '" + labelText + "')]/preceding-sibling::input"))).click();
+        }
     }
 }
